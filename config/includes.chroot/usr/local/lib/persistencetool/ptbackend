@@ -93,13 +93,7 @@ class ConfDir(object):
 def format_disk(disk, confdir):
     diskpath= '/dev/' + disk
 
-    # Uncomment when e2fsprogs 1.43 lands in debian stable :(
-    # args= ['/sbin/mkfs.ext4', '-L', 'persistence', '-q', '-d', confdir, diskpath]
-    args= ['mkfs.btrfs', '-L', 'persistence', '-r', confdir, diskpath]
-
-    # Uncomment when Python 3.5 lands in debian stable :(
-    # mkfsret= subprocess.run(args, input=b'n')
-    # return (mkfsret.returncode == 0)
+    args= ['mkfs.ext4', '-L', 'persistence', '-q', '-d', confdir, diskpath]
 
     sp= subprocess.Popen(
         args,
