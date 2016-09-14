@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import errno
+import subprocess
+import tempfile
+
+def get_mounts():
+    with open('/proc/mounts') as mnts:
+        fmt= 'device mountpoint type options dump fsck'.split()
+
+        mounts= [dict(zip(fmt, mnt.split())) for mnt in mnts]
+
+    return(mounts)
+
+def human_readable_size(size):
+    prefixes= ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+
+    for p in prefixes:
+        if size>=1000:
+            size/=1000
+        else:
+            return ('{:d}{}'.format(int(size), p))
+
+def get_blockdevs():
+    syspath= '/sys/class/block'
+
+    blockdevs= dict((b, {}) for b in os.listdir(syspath))
+
+    for bd in blockdevs:
+        partpath= os.path.join(syspath, bd, 'partition')
+        ropath= os.path.join(syspath, bd, 'ro')
+        modelpath= os.path.join(syspath, bd, 'device/model')
+        sizepath= os.path.join(syspath, bd, 'size')
+
+        blockdevs[bd]['partition']= os.path.isfile(partpath)
+
+        with open(ropath) as ro:
+            status= ro.read().strip()
+            blockdevs[bd]['ro']= (status == '1')
+
+        try:
+            with open(modelpath) as md:
+                blockdevs[bd]['model']= md.read().strip()
+        except IOError:
+            blockdevs[bd]['model']= 'Unknown'
+
+        with open(sizepath) as sp:
+            size= int(sp.read().strip())*512
+            blockdevs[bd]['size']= size
+            blockdevs[bd]['size_human']= human_readable_size(size)
+
+    return (blockdevs)
+
+def is_persistence_mounted():
+    for mount in get_mounts():
+        if (mount['mountpoint'].startswith('/lib/live/mount/persistence')
+            and 'rw' in mount['options']):
+
+            return True
+
+    return False
+
+def get_persistence_candidates():
+    bds= get_blockdevs()
+
+    # I could not get persistence on partitions working
+    # so only bare devices are shown
+    candidates= filter(
+        lambda bd: (not (bd[1]['ro'] or bd[1]['partition'])),
+        bds.items()
+    )
+
+    return(dict(candidates))
+
+class ConfDir(object):
+    def __enter__(self):
+        self.basedir= tempfile.mkdtemp()
+        self.path= os.path.join(self.basedir, 'persistence.conf')
+
+        with open(self.path, 'w') as pconf:
+            pconf.write('/ union\n')
+
+            return self.basedir
+
+        return (self.basedir)
+
+    def __exit__(self, type, value, traceback):
+        os.remove(self.path)
+        os.rmdir(self.basedir)
+
+def format_disk(disk, confdir):
+    diskpath= '/dev/' + disk
+
+    # Uncomment when e2fsprogs 1.43 lands in debian stable :(
+    # args= ['/sbin/mkfs.ext4', '-L', 'persistence', '-q', '-d', confdir, diskpath]
+    args= ['mkfs.btrfs', '-L', 'persistence', '-r', confdir, diskpath]
+
+    # Uncomment when Python 3.5 lands in debian stable :(
+    # mkfsret= subprocess.run(args, input=b'n')
+    # return (mkfsret.returncode == 0)
+
+    sp= subprocess.Popen(
+        args,
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        universal_newlines=True
+    )
+
+    if sp.wait() != 0:
+        return (False, sp.stdout.read())
+
+    return (True, '')
+
+def fmt_output(msgtype, text):
+    if isinstance(text, str):
+        text= text.split('\n')
+
+    sys.stdout.write('{}\n{}\n\n'.format(msgtype, '\n'.join(' ' + t.strip() for t in text)))
+
+def main():
+    if is_persistence_mounted():
+        fmt_output('error', 'peristence is already activated')
+
+        return -1
+
+    devs= get_persistence_candidates()
+
+    def fmtoptions():
+        for d in sorted(devs.keys()):
+            yield (
+                '{},{},{}'.format (
+                    d,
+                    devs[d]['model'].replace(',',''),
+                    devs[d]['size_human']
+                )
+            )
+
+    fmt_output('options', fmtoptions())
+
+    selected= input()
+
+
+    if selected not in devs:
+        fmt_output('error', 'selected device not in list')
+
+        return -1
+
+    with ConfDir() as confdir:
+        status, message= format_disk(selected, confdir)
+
+        if not status:
+            fmt_output('error', 'formatting failed \n' + message)
+
+            return -1
+
+    fmt_output('success', 'persistence medium is ready')
+
+    return 0
+
+if __name__ == '__main__':
+    exit(main())

@@ -82,8 +82,8 @@ LB_ISO_APPLICATION="Gdi CD"
 LB_ISO_PREPARER="live-build $VERSION; http://live-systems.org/devel/live-build"
 
 # $LB_ISO_PUBLISHER: set iso publisher
-# (Default: Comnet Uni Bremen)
-LB_ISO_PUBLISHER="Comnet Uni Bremen"
+# (Default: Comnets Uni Bremen)
+LB_ISO_PUBLISHER="Comnets Uni Bremen"
 
 # $LB_ISO_VOLUME: set iso volume (max 32 chars)
 # (Default: Gdi CD)

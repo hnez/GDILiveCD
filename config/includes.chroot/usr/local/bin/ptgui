@@ -1,0 +1,139 @@
+#!/usr/bin/env python3
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
+import subprocess
+
+class BackendComm(object):
+    def __init__(self):
+        self.sp= subprocess.Popen(
+            ['sudo', '/usr/local/lib/persistencetool/ptbackend'],
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+            universal_newlines=True
+        )
+
+    def sep_iter(self, stream):
+        for ln in stream:
+            if ln == '\n':
+                break
+
+            yield (ln.strip())
+
+    def read(self):
+        reader= self.sep_iter(self.sp.stdout)
+
+        status= next(reader)
+        lines= list(reader)
+
+        return (status, lines)
+
+    def write(self, line):
+        self.sp.stdin.write(line + '\n')
+        self.sp.stdin.flush()
+
+    def close(self):
+        return(self.sp.wait())
+
+class BlockDevRow(Gtk.ListBoxRow):
+    def __init__(self, bd):
+        super(Gtk.ListBoxRow, self).__init__()
+
+        (self.name, self.model, self.size)= bd
+
+        box = Gtk.Box()
+        box.set_homogeneous(True)
+        self.add(box)
+
+        box.add(Gtk.Label(self.name))
+        box.add(Gtk.Label(self.model))
+        box.add(Gtk.Label(self.size))
+
+class AssistantWindow(object):
+    def __init__(self):
+        self.builder= Gtk.Builder()
+
+        self.builder.add_from_file('/usr/local/lib/persistencetool/gui.glade')
+        self.builder.connect_signals(self)
+
+        self.assistant= self.builder.get_object('assistant_window')
+
+        try:
+            self.backend= BackendComm()
+        except:
+            self.error_window('starting background helper failed')
+
+            Gtk.main()
+
+        status, messages= self.backend.read()
+
+        if status != 'options':
+            self.error_window('helper error:\n' + '\n'.join(messages))
+
+            Gtk.main()
+
+        self.blockdevs= [m.split(',') for m in messages]
+
+        self.blockdevlist= self.builder.get_object('blockdev_list')
+
+        for bd in self.blockdevs:
+            row = BlockDevRow(bd)
+            self.blockdevlist.add(row)
+
+    def error_window(self, text):
+        errdiag= self.builder.get_object('error_window')
+        errdiag.format_secondary_text(text)
+        errdiag.show_all()
+
+    def show(self):
+        self.assistant.show_all()
+
+        Gtk.main()
+
+    def on_blockdev_list_row_activated(self, widget, row):
+        page= self.builder.get_object('assistant_device_page')
+        self.assistant.set_page_complete(page, True)
+
+        self.dev= row.name
+
+    def on_assistant_window_apply(self, *args):
+        self.backend.write(self.dev)
+
+        status, messages= self.backend.read()
+
+        if status != 'success':
+            self.error_window('helper error:\n' + '\n'.join(messages))
+            return
+
+        page= self.builder.get_object('assistant_wait_page')
+
+        txt= page.get_text() + '\n...done'
+        page.set_text(txt)
+
+        self.assistant.set_page_complete(page, True)
+
+    def on_error_window_close(self, *args):
+        Gtk.main_quit(*args)
+        exit(1)
+
+    def on_error_window_delete_event(self, *args):
+        Gtk.main_quit(*args)
+        exit(1)
+
+    def on_assistant_window_cancel(self, *args):
+        Gtk.main_quit(*args)
+
+    def on_assistant_window_close(self, *args):
+        Gtk.main_quit(*args)
+
+    def on_assistant_window_delete_event(self, *args):
+        Gtk.main_quit(*args)
+
+def main():
+    assi= AssistantWindow()
+
+    assi.show()
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
+<interface>
+  <requires lib="gtk+" version="3.14"/>
+  <object class="GtkAssistant" id="assistant_window">
+    <property name="can_focus">False</property>
+    <property name="use_header_bar">0</property>
+    <signal name="apply" handler="on_assistant_window_apply" swapped="no"/>
+    <signal name="cancel" handler="on_assistant_window_cancel" swapped="no"/>
+    <signal name="close" handler="on_assistant_window_close" swapped="no"/>
+    <signal name="delete-event" handler="on_assistant_window_delete_event" swapped="no"/>
+    <child>
+      <object class="GtkBox" id="assistant_info_page">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="stock">gtk-harddisk</property>
+            <property name="icon_size">6</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">This assistant will guide you
+through the creation of a storage
+area for data that should persist
+over reboots.
+
+Only use this assistant on a
+&lt;b&gt;virtual machine&lt;/b&gt;.
+Not on &lt;b&gt;actual hardware&lt;/b&gt;.</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="page_type">intro</property>
+        <property name="title" translatable="yes">Info</property>
+        <property name="complete">True</property>
+        <property name="has_padding">False</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="assistant_device_page">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Select a device to use for persistent
+storage from the list below.
+All data on the device will be deleted.</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkListBox" id="blockdev_list">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <signal name="row-activated" handler="on_blockdev_list_row_activated" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="page_type">confirm</property>
+        <property name="title" translatable="yes">Choose a device</property>
+        <property name="has_padding">False</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="assistant_wait_page">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Please wait while storage space
+is prepared for use...</property>
+      </object>
+      <packing>
+        <property name="page_type">progress</property>
+        <property name="title" translatable="yes">Processing</property>
+        <property name="has_padding">False</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="assistant_end_page">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">The storage space was created.
+Please reboot the virtual machine
+to start using it.</property>
+      </object>
+      <packing>
+        <property name="page_type">summary</property>
+        <property name="title" translatable="yes">Finished</property>
+        <property name="complete">True</property>
+        <property name="has_padding">False</property>
+      </packing>
+    </child>
+    <child internal-child="action_area">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="halign">end</property>
+        <property name="margin_left">6</property>
+        <property name="margin_right">6</property>
+        <property name="margin_start">6</property>
+        <property name="margin_end">6</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">6</property>
+        <property name="spacing">6</property>
+      </object>
+      <packing>
+        <property name="has_padding">False</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkMessageDialog" id="error_window">
+    <property name="can_focus">False</property>
+    <property name="type_hint">dialog</property>
+    <property name="message_type">error</property>
+    <property name="buttons">close</property>
+    <property name="text" translatable="yes">Error</property>
+    <signal name="close" handler="on_error_window_close" swapped="no"/>
+    <signal name="delete-event" handler="on_error_window_delete_event" swapped="no"/>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

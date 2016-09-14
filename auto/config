@@ -18,4 +18,4 @@ lb config noauto \
    --parent-mirror-binary ${MIRROR} \
    --archive-areas "main contrib" \
    --apt apt \
-     "${@}"
+      "${@}"

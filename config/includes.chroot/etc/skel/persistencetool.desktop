@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Persistence Tool
+Comments=Creates a persistence partition
+Exec=ptgui
+Icon=gtk-harddisk
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=GTK;System
