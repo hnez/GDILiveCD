@@ -5,6 +5,7 @@ set -e
 MIRROR="http://ftp.de.debian.org/debian/"
 
 lb config noauto \
+   --architectures i386 \
    --ignore-system-defaults \
    --bootappend-live "boot=live components quiet splash persistence locales=de_DE.UTF-8 keyboard-layouts=de" \
    --checksums sha256 \
@@ -18,4 +19,4 @@ lb config noauto \
    --parent-mirror-binary ${MIRROR} \
    --archive-areas "main contrib" \
    --apt apt \
-       "${@}"
+        "${@}"

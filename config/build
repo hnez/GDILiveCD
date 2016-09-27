@@ -1,5 +1,5 @@
 [Image]
-Architecture: amd64
+Architecture: i386
 Archive-Areas: main contrib
 Distribution: stable
 Mirror-Bootstrap: http://ftp.debian.org/debian/
