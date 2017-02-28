@@ -13,11 +13,18 @@ python
 python-gi
 python-matplotlib
 python-bottle
+python-sqlobject
+python-serial
+python-numpy
+python-landslide
 
 python3
 python3-gi
 python3-matplotlib
 python3-bottle
+python3-sqlobject
+python3-serial
+python3-numpy
 
 gir1.2-gtk-3.0
 
