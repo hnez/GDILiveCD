@@ -21,8 +21,8 @@ LB_BOOTAPPEND_INSTALL=""
 LB_BOOTAPPEND_LIVE_FAILSAFE="boot=live components memtest noapic noapm nodma nomce nolapic nomodeset nosmp nosplash vga=normal"
 
 # $LB_BOOTLOADERS: set bootloaders
-# (Default: syslinux)
-LB_BOOTLOADERS="syslinux"
+# (Default: syslinux,grub-efi)
+LB_BOOTLOADERS="syslinux,grub-efi"
 
 # $LB_CHECKSUMS: set checksums
 # (Default: sha256)
@@ -47,7 +47,7 @@ LB_DEBIAN_INSTALLER="false"
 
 # $LB_DEBIAN_INSTALLER_DISTRIBUTION: set debian-installer suite
 # (Default: empty)
-LB_DEBIAN_INSTALLER_DISTRIBUTION="stable"
+LB_DEBIAN_INSTALLER_DISTRIBUTION="stretch"
 
 # $LB_DEBIAN_INSTALLER_PRESEEDFILE: set debian-installer preseed filename/url
 # (Default: )
@@ -78,8 +78,8 @@ LB_HDD_PARTITION_START=""
 LB_ISO_APPLICATION="Gdi CD"
 
 # $LB_ISO_PREPARER: set iso preparer
-# (Default: live-build 1:20170213; http://live-systems.org/devel/live-build)
-LB_ISO_PREPARER="live-build 1:20170213; http://live-systems.org/devel/live-build"
+# (Default: live-build $VERSION; http://live-systems.org/devel/live-build)
+LB_ISO_PREPARER="live-build $VERSION; http://live-systems.org/devel/live-build"
 
 # $LB_ISO_PUBLISHER: set iso publisher
 # (Default: Comnets Uni Bremen)

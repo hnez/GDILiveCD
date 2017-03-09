@@ -5,8 +5,8 @@
 LB_CHROOT_FILESYSTEM="squashfs"
 
 # $LB_UNION_FILESYSTEM: set union filesystem
-# (Default: aufs)
-LB_UNION_FILESYSTEM="aufs"
+# (Default: overlay)
+LB_UNION_FILESYSTEM="overlay"
 
 # $LB_INTERACTIVE: set interactive build
 # (Default: false)
