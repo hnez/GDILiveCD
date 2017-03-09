@@ -10,7 +10,7 @@ lb config noauto \
    --bootappend-live "boot=live components quiet splash persistence locales=de_DE.UTF-8 keyboard-layouts=de" \
    --checksums sha256 \
    --mode debian \
-   --distribution stable \
+   --distribution stretch \
    --initramfs-compression lzma \
    --iso-application "Gdi CD" \
    --iso-volume "Gdi CD" \
@@ -19,4 +19,4 @@ lb config noauto \
    --parent-mirror-binary ${MIRROR} \
    --archive-areas "main contrib" \
    --apt apt \
-        "${@}"
+         "${@}"
