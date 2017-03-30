@@ -78,8 +78,8 @@ LB_HDD_PARTITION_START=""
 LB_ISO_APPLICATION="Gdi CD"
 
 # $LB_ISO_PREPARER: set iso preparer
-# (Default: live-build $VERSION; http://live-systems.org/devel/live-build)
-LB_ISO_PREPARER="live-build $VERSION; http://live-systems.org/devel/live-build"
+# (Default: live-build 1:20170213; http://live-systems.org/devel/live-build)
+LB_ISO_PREPARER="live-build 1:20170213; http://live-systems.org/devel/live-build"
 
 # $LB_ISO_PUBLISHER: set iso publisher
 # (Default: Comnets Uni Bremen)

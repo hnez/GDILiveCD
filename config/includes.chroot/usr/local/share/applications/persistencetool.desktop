@@ -2,7 +2,7 @@
 Name=Persistence Tool
 Comments=Creates a persistence partition
 Exec=ptgui
-Icon=gtk-harddisk
+Icon=drive-harddisk
 StartupNotify=true
 Terminal=false
 Type=Application
