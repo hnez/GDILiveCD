@@ -9,3 +9,8 @@
 !/README.md
 
 *~
+
+
+/documentation/*.html
+/documentation/videos/*.jpg
+/documentation/videos/*.mp4
